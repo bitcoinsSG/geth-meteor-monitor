@@ -8,13 +8,11 @@
 </body>
 
 <template name="hello">
-  <p>current block:  {{ currentblock }}</p>
-  <p>     coinbase:  {{ coinbase }}</p>
-  <p>      syncing:  {{ syncing }}</p>
-  <p>    peercount:  {{ peercount }}</p>
-  <p>      getwork:  {{ text getwork 15}} </p>
-  <p> latest block:  {{ text latestblock 15}} </p>
 
+  <p>current block:  {{ Latest_Ethereum_Block.height }} </p>
+  <p>      syncing:  {{ syncing.status }}</p>
+  <p>    peercount:  {{ peercount.count }}</p>
+  <p> latest block:  {{ text Latest_Ethereum_Block.hash 17 }} </p>
   <button>Click Me</button>
   <p>You've pressed the button {{counter}} times.</p>
 </template>

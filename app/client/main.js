@@ -4,7 +4,9 @@ import web3 from 'web3';
 import './main.html';
 
 // Collections 
-import { Recent_Ethereum_Block }  from '/imports/collections';
+import { Recent_Ethereum_Blocks } from '../imports/collections.js';
+import { Syncing } from '/imports/collections';
+import { PeerCount } from '/imports/collections';
 // Collections
 
 
@@ -42,23 +44,20 @@ Template.hello.helpers({
     
     return Template.instance().counter.get();
   },
-  coinbase() {
-    return Template.instance().coinbase.get();
-  },
   currentblock() {
     return Template.instance().currentblock.get();
   },
   syncing() {
-    return Template.instance().syncing.get();
+    return Syncing.findOne({},{"sort": {"date_created":-1}, "limit":1});
   },
   peercount() {
-    return Template.instance().peercount.get();
-  },
-  getwork() {
-    return Template.instance().getwork.get();
+    return PeerCount.findOne({},{"sort": {"date_created":-1}, "limit":1});
   },
   latestblock() {
     return Template.instance().latestblock.get();
+  },
+  Latest_Ethereum_Block() {
+        return Recent_Ethereum_Blocks.findOne({},{"sort": {"date_created":-1}, "limit":1});
   },
 });
 
@@ -68,37 +67,14 @@ Template.hello.helpers({
 Template.hello.events({
   'click button'(event, instance) {
   	instance.counter.set(instance.counter.get() + 1);
-
-  	web4.eth.getCoinbase(function(err,res){
-  		instance.coinbase.set(res);
-
-  	});
-
-
-
-  	web4.eth.getBlockNumber(function(err,res){
-  		instance.currentblock.set(res);
-
-      web4.eth.getBlock(res,function(err,res){
-        instance.latestblock.set(res.hash)
-      });    
-
-  	});
-
-
-
+/*
   	web4.eth.isSyncing(function(err,res){
   		instance.syncing.set(res.toString());
   	});
   	web4.eth.net.getPeerCount(function(err,res){
   		instance.peercount.set(res);
   	});
-  	web4.eth.getWork(function(err,res){
-  		instance.getwork.set(res.toString());
-  	});
-
-    instance.counter.set(instance.counter.get() + 1);
-
+*/
   },
 });
 

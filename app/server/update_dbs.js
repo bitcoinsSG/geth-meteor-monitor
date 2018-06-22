@@ -1,4 +1,5 @@
 //import dbs
+/*
 const Web3 = require('web3');
 import { Recent_Ethereum_Block } from '/db/collections';
 
@@ -19,3 +20,4 @@ console.log(blockHeader.number);
 
 
 console.log('what');
+*/

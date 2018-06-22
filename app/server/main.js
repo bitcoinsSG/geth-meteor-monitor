@@ -2,7 +2,9 @@
 import { Meteor } from 'meteor/meteor';
 //import database collections
 import { Mongo } from 'meteor/mongo';
-import { Recent_Ethereum_Block } from '/imports/collections';
+import { Recent_Ethereum_Blocks } from '/imports/collections';
+import { Syncing } from '/imports/collections';
+import { PeerCount } from '/imports/collections';
 
 
 const Web3 = require('web3');
@@ -21,8 +23,9 @@ var subscription = web4websocket.eth.subscribe('newBlockHeaders', function(error
     if (error)
         console.log(error);
 }).on("data", Meteor.bindEnvironment(function(blockHeader){
-  update_Recent_Ethereum_Block_db(blockHeader,Recent_Ethereum_Block);
-  console.log(blockHeader.number)
+  update_Recent_Ethereum_Block_db(blockHeader,Recent_Ethereum_Blocks);
+  update_other_details();
+  console.log(blockHeader.number);
 }));
 
 
@@ -30,14 +33,27 @@ var subscription = web4websocket.eth.subscribe('newBlockHeaders', function(error
 
 
 function update_Recent_Ethereum_Block_db(blockHeader) {
-    if (Recent_Ethereum_Block.find({}).count() < 10){
-        Recent_Ethereum_Block.insert({hash : blockHeader['hash'],height:blockHeader['number'],time:blockHeader['timestamp'], date_created: new Date()});
+    if (Recent_Ethereum_Blocks.find({}).count() < 10){
+        Recent_Ethereum_Blocks.insert({hash : blockHeader['hash'],height:blockHeader['number'],time:blockHeader['timestamp'], date_created: new Date()});
     }
     else{
-        var earliest_block=Recent_Ethereum_Block.findOne({},{"sort": {"date_created":1}, "limit" : 1});
-        Recent_Ethereum_Block.update(earliest_block._id,{$set: {hash : blockHeader['hash'],height:blockHeader['number'],time:blockHeader['timestamp'], date_created: new Date()}});
+        var earliest_block=Recent_Ethereum_Blocks.findOne({},{"sort": {"date_created":1}, "limit" : 1});
+        Recent_Ethereum_Blocks.update(earliest_block._id,{$set: {hash : blockHeader['hash'],height:blockHeader['number'],time:blockHeader['timestamp'], date_created: new Date()}});
     }
-    console.log('added new block to collection');
+}
+
+
+function update_other_details(){
+  // update all essential variables and put them into their own collections
+  // update syncing status
+  web4.eth.isSyncing(Meteor.bindEnvironment(function(err,res){
+    (err) ? console.log(err) : Syncing.insert({status :  res.toString(), date_created: new Date()});
+  }));
+  // update peer count
+  web4.eth.net.getPeerCount(Meteor.bindEnvironment(function(err,res){
+    (err) ? console.log(err) : PeerCount.insert({count :  res, date_created: new Date()});
+  }));
+
 }
 
 //web4.eth.net.getPeerCount(function(error,result){	console.log(result);});
