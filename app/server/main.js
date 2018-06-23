@@ -12,10 +12,13 @@ const Web3 = require('web3');
 const web4 = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:8545'));
 const web4websocket = new Web3(new Web3.providers.WebsocketProvider("ws://127.0.0.1:8546"));
 const XMLHttpRequest = require('xhr2').XMLHttpRequest;
+var etherpriceinusd = 0;
+
 
 Meteor.startup(() => {
   // code to run on server at startup
   console.log("Server started");
+  etherpriceinusd = JSON.parse(HTTP.call('GET','https://api.coinmarketcap.com/v1/ticker/ethereum/').content)[0].price_usd;
 
 });
 
@@ -69,9 +72,11 @@ function update_other_details(){
       web4.eth.call(currentPriceCall,Meteor.bindEnvironment(function(err,res){
 
         var priceineth=parseInt((res))/1000000000000000000;
+        var metpriceinusd = priceineth * etherpriceinusd;
+        metpriceinusd=metpriceinusd.toPrecision(7);
         priceineth=priceineth.toPrecision(7);
-        ContractState.insert({priceineth : priceineth, percent :  percent, date_created: new Date()});
-        //console.log(priceineth);
+
+        ContractState.insert({priceineth : priceineth, priceinusd : metpriceinusd, percent :  percent, date_created: new Date()});
       }));
     }
   }));
@@ -83,6 +88,15 @@ function update_other_details(){
 
 }
 
+
+
+// get ethereum price every 20 secs
+/*
+Meteor.bindEnvironment(setInterval(function() {
+    var etherpriceinusd = JSON.parse(HTTP.call('GET','https://api.coinmarketcap.com/v1/ticker/ethereum/').content)[0].price_usd;
+    console.log(etherpriceinusd);
+}, 6 * 1000));
+*/
 
 
 //utility functions
