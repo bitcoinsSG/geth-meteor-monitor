@@ -86,3 +86,10 @@ Template.registerHelper('text', function(passedString, count) {
     var fooText = passedString.substring(0,count); //same as truncate.
     return new Spacebars.SafeString(fooText)
 });
+
+
+
+Template.registerHelper('humantime', function(passedDate) {
+    var humantime = moment(passedDate.date_created).fromNow();
+    return new Spacebars.SafeString(humantime)
+});
