@@ -6,6 +6,8 @@ export const Syncing = new Mongo.Collection("Syncing");
 
 export const PeerCount = new Mongo.Collection("PeerCount");
 
+export const ContractState = new Mongo.Collection("ContractState");
+
 /*
 Meteor.publish("Latest_Ethereum_Block_publish", function () {
         return Recent_Ethereum_Block.find({},{"sort": {"date_created":-1}, "limit":1});

@@ -4,17 +4,16 @@
 
 <body>
   {{> hello}}
-  {{> info}}
 </body>
 
 <template name="hello">
-
   <p>current block:  {{ Latest_Ethereum_Block.height }} </p>
-  <p>      syncing:  {{ syncing.status }}</p>
+  <p>  % MET sold :  {{ ContractStatePercent.percent }} </p>
+  <p> price in eth :  {{ ContractStatePercent.priceineth }} </p>
   <p>    peercount:  {{ peercount.count }}</p>
-  <p> latest block:  {{ text Latest_Ethereum_Block.hash 17 }} </p>
-  <button>Click Me</button>
-  <p>You've pressed the button {{counter}} times.</p>
+  <p>      syncing:  {{ syncing }}</p>
+  <p> latest block:  {{ text Latest_Ethereum_Block.hash 14 }} </p>
+
 </template>
 
 <template name="info">

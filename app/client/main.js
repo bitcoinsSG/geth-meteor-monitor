@@ -7,6 +7,7 @@ import './main.html';
 import { Recent_Ethereum_Blocks } from '../imports/collections.js';
 import { Syncing } from '/imports/collections';
 import { PeerCount } from '/imports/collections';
+import { ContractState } from '/imports/collections';
 // Collections
 
 
@@ -28,8 +29,7 @@ console.log(qwer);
 
 
 Template.hello.onCreated(function helloOnCreated() {
-  // counter starts at 0
-  this.counter = new ReactiveVar(0);
+  //this.counter = new ReactiveVar(0);
   this.coinbase = new ReactiveVar('uninitialized');
   this.currentblock = new ReactiveVar('uninitialized');
   this.syncing = new ReactiveVar('uninitialized');//web4.eth.syncing.toString());
@@ -40,15 +40,14 @@ Template.hello.onCreated(function helloOnCreated() {
 });
 
 Template.hello.helpers({
-  counter() {
-    
-    return Template.instance().counter.get();
-  },
   currentblock() {
     return Template.instance().currentblock.get();
   },
   syncing() {
-    return Syncing.findOne({},{"sort": {"date_created":-1}, "limit":1});
+    var syncState = Syncing.findOne({},{"sort": {"date_created":-1}, "limit":1});
+    if(syncState == null ) return 'connecting';
+    else if (syncState.status != 'false') return 'syncing';
+    else return 'live';
   },
   peercount() {
     return PeerCount.findOne({},{"sort": {"date_created":-1}, "limit":1});
@@ -59,6 +58,9 @@ Template.hello.helpers({
   Latest_Ethereum_Block() {
         return Recent_Ethereum_Blocks.findOne({},{"sort": {"date_created":-1}, "limit":1});
   },
+  ContractStatePercent() {
+        return ContractState.findOne({},{"sort": {"date_created":-1}, "limit":1});
+  },
 });
 
 
@@ -66,7 +68,7 @@ Template.hello.helpers({
 
 Template.hello.events({
   'click button'(event, instance) {
-  	instance.counter.set(instance.counter.get() + 1);
+  //	instance.counter.set(instance.counter.get() + 1);
 /*
   	web4.eth.isSyncing(function(err,res){
   		instance.syncing.set(res.toString());
